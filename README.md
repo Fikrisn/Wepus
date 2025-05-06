@@ -39,6 +39,7 @@ tambahkan ke .env:
 DATABASE_URL=postgres://postgres:root@localhost:5432/wepus
 
 # Struktur Direktori
+```bash
 project-root/
 │
 ├── backend/
@@ -58,6 +59,7 @@ project-root/
 ├── drizzle.config.ts         # Konfigurasi Drizzle CLI
 ├── .env
 └── package.json
+```
 
 # Menambahkan perintah di script yang digunakan untuk memulai project
 ```bash
