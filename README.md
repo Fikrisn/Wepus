@@ -34,8 +34,8 @@ bun add -D drizzle-kit tsx @types/pg
 ```
 
 # Setup Database (PostgreSQL via pgAdmin)
-buat database di pgAdmin : wepus
-tambahkan ke .env:
+buat database di pgAdmin : wepus <br>
+tambahkan ke .env: <br>
 DATABASE_URL=postgres://postgres:root@localhost:5432/wepus
 
 # Struktur Direktori
@@ -69,7 +69,7 @@ project-root/
 }
 ```
 
-dev:backend   digunakan untuk memulai server
+dev:backend   digunakan untuk memulai server <br>
 dev:frontend  digunakan untuk memulai tampilan
 
 # Cara menjalankan backend 
@@ -96,5 +96,5 @@ bunx drizzle-kit studio
 ```
 
 # Beberapa tips 
-Gunakan camelCase untuk nama route, contoh lariRoute
+Gunakan camelCase untuk nama route, contoh lariRoute <br>
 Gunakan .env untuk menyimpan variable sensitif agar ti
