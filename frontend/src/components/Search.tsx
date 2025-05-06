@@ -1,30 +1,35 @@
-import { useState } from "react"
+import { useState } from "react";
+import { Search as SearchIcon } from "lucide-react";
 
 const Search = () => {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Searching:", searchTerm)
-  }
+    e.preventDefault();
+    console.log("Searching:", searchTerm);
+  };
 
   return (
-    <form onSubmit={handleSearch} className="flex gap-2">
+    <form
+      onSubmit={handleSearch}
+      className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-all focus-within:ring-2 focus-within:ring-blue-500"
+    >
+      <SearchIcon className="text-gray-500 w-4 h-4" />
       <input
         type="text"
-        placeholder="Search"
+        placeholder="Cari buku..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="px-3 py-1 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+        className="flex-1 bg-transparent focus:outline-none text-sm text-gray-700 placeholder-gray-400"
       />
       <button
         type="submit"
-        className="px-3 py-1.5 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 transition"
+        className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-full hover:bg-blue-700 transition font-medium"
       >
         Cari
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default Search
+export default Search;

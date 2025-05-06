@@ -1,6 +1,6 @@
 import './App.css'
-import Header from './components/header'
-import BookTable from './components/bookTable'
+import Header from './components/Header'
+import BookTable from './components/BookTable'
 
 function App() {
   return (
