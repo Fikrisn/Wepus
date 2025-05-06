@@ -36,7 +36,10 @@ bun add -D drizzle-kit tsx @types/pg
 # Setup Database (PostgreSQL via pgAdmin)
 buat database di pgAdmin : wepus <br>
 tambahkan ke .env: <br>
-DATABASE_URL=postgres://postgres:root@localhost:5432/wepus
+```bash
+DATABASE_URL=postgres://postgres:********@localhost:5432/wepus
+```
+bintang" setelah postgres masukkan sandi dari pgAdmin anda
 
 # Struktur Direktori
 ```bash
