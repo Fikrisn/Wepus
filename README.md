@@ -35,16 +35,14 @@ bun add -D drizzle-kit tsx @types/pg
 
 # Setup Database (PostgreSQL via pgAdmin)
 buat database di pgAdmin : wepus <br>
-<<<<<<< HEAD
 tambahkan ke .env:
 DATABASE_URL=postgres://postgres:root@localhost:5432/wepus
-=======
 tambahkan ke .env: <br>
 ```bash
 DATABASE_URL=postgres://postgres:********@localhost:5432/wepus
 ```
 bintang" setelah postgres masukkan sandi dari pgAdmin anda
->>>>>>> 3f16cf11551a188cdd5d8d456ea9462c8c139e38
+
 
 # Struktur Direktori
 ```bash
@@ -104,10 +102,5 @@ bunx drizzle-kit studio
 ```
 
 # Beberapa tips 
-<<<<<<< HEAD
 Gunakan camelCase untuk nama route, contoh lariRoute
-Gunakan .gitignore untuk menyimpan variable sensitif agar 
-=======
-Gunakan camelCase untuk nama route, contoh lariRoute <br>
-Gunakan .env untuk menyimpan variable sensitif agar ti
->>>>>>> 3f16cf11551a188cdd5d8d456ea9462c8c139e38
+Gunakan .gitignore untuk menyimpan variable sensitif agar tidak ter ekspos
