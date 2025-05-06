@@ -40,17 +40,17 @@ bukuRoute
             keterangan: buku.keterangan,
             createdAt: buku.createdAt,
             updatedAt: buku.updatedAt,
+            idKategori: buku.idKategori,
+            idPenerbit: buku.idPenerbit,
+            idPembuat: buku.idPembuat
           },
           kategori: {
-            idKategori: kategori.idKategori,
             namaKategori: kategori.namaKategori,
           },
           penerbit: {
-            idPenerbit: penerbit.idPenerbit,
             namaPenerbit: penerbit.namaPenerbit,
           },
           pembuat: {
-            idPembuat: pembuat.idPembuat,
             namaPembuat: pembuat.namaPembuat,
           },
         })
@@ -60,7 +60,7 @@ bukuRoute
         .leftJoin(pembuat, eq(buku.idPembuat, pembuat.idPembuat))
         .orderBy(buku.idBuku);
 
-      return c.json({ status: true, message: "Berhasil mendapatkan data buku", data: result });
+      return c.json(result);
     } catch (error) {
       return c.json({
         status: false,
@@ -107,10 +107,10 @@ bukuRoute
         .where(eq(buku.idBuku, id));
 
       if (!result.length) {
-        return c.json({ status: false, message: "Buku tidak ditemukan" }, 404);
+        return c.json(result);
       }
 
-      return c.json({ status: true, message: "Berhasil mendapatkan detail buku", data: result[0] });
+      return c.json(result);
     } catch (error) {
       return c.json({
         status: false,
@@ -139,37 +139,27 @@ bukuRoute
       if (penerbitId) filters.push(eq(buku.idPenerbit, Number(penerbitId)));
 
       const result = await db
-        .select({
-          buku: {
-            idBuku: buku.idBuku,
-            namaBuku: buku.namaBuku,
-            isbn: buku.isbn,
-            issn: buku.issn,
-            tahunPembuatan: buku.tahunPembuatan,
-            harga: buku.harga,
-            keterangan: buku.keterangan,
-          },
-          kategori: {
-            idKategori: kategori.idKategori,
-            namaKategori: kategori.namaKategori,
-          },
-          penerbit: {
-            idPenerbit: penerbit.idPenerbit,
-            namaPenerbit: penerbit.namaPenerbit,
-          },
-          pembuat: {
-            idPembuat: pembuat.idPembuat,
-            namaPembuat: pembuat.namaPembuat,
-          },
-        })
-        .from(buku)
-        .leftJoin(kategori, eq(buku.idKategori, kategori.idKategori))
-        .leftJoin(penerbit, eq(buku.idPenerbit, penerbit.idPenerbit))
-        .leftJoin(pembuat, eq(buku.idPembuat, pembuat.idPembuat))
-        .where(filters.length > 0 ? and(...filters) : undefined)
-        .orderBy(buku.namaBuku);
+      .select({
+        idBuku: buku.idBuku,
+        namaBuku: buku.namaBuku,
+        isbn: buku.isbn,
+        issn: buku.issn,
+        tahunPembuatan: buku.tahunPembuatan,
+        harga: buku.harga,
+        keterangan: buku.keterangan,
 
-      return c.json({ status: true, message: "Berhasil mencari data buku", data: result });
+        namaKategori: kategori.namaKategori,
+        namaPenerbit: penerbit.namaPenerbit,
+        namaPembuat: pembuat.namaPembuat,
+      })
+      .from(buku)
+      .leftJoin(kategori, eq(buku.idKategori, kategori.idKategori))
+      .leftJoin(penerbit, eq(buku.idPenerbit, penerbit.idPenerbit))
+      .leftJoin(pembuat, eq(buku.idPembuat, pembuat.idPembuat))
+      .where(filters.length > 0 ? and(...filters) : undefined)
+      .orderBy(buku.namaBuku);
+
+      return c.json(result);
     } catch (error) {
       return c.json({
         status: false,
@@ -213,12 +203,72 @@ bukuRoute
       return c.json({
         status: true,
         message: "Berhasil menambahkan buku",
-        data: result[0],
+         result,
       }, 201);
     } catch (error) {
       return c.json({
         status: false,
         message: "Gagal menambahkan buku",
+        error: error instanceof Error ? error.message : String(error),
+      }, 500);
+    }
+  })
+
+  .put("/update-buku/:id", async (c) => {
+    try {
+      const id = Number(c.req.param("id"));
+      const body = await c.req.json();
+      
+      // Validasi input
+      const errors = validateBuku(body);
+      if (errors.length > 0) {
+        return c.json({ status: false, message: "Validasi gagal", errors }, 400);
+      }
+
+      // Cek apakah buku ada
+      const [bookExists] = await db.select().from(buku).where(eq(buku.idBuku, id));
+      if (!bookExists) {
+        return c.json({ status: false, message: "Buku tidak ditemukan" }, 404);
+      }
+
+      // Cek apakah kategori, penerbit, dan pembuat ada
+      const [kategoriExists] = await db.select().from(kategori).where(eq(kategori.idKategori, body.idKategori));
+      const [penerbitExists] = await db.select().from(penerbit).where(eq(penerbit.idPenerbit, body.idPenerbit));
+      const [pembuatExists] = await db.select().from(pembuat).where(eq(pembuat.idPembuat, body.idPembuat));
+
+      if (!kategoriExists || !penerbitExists || !pembuatExists) {
+        return c.json({
+          status: false,
+          message: "Kategori, Penerbit, atau Pembuat tidak ditemukan",
+        }, 400);
+      }
+
+      // Update buku
+      const result = await db.update(buku)
+        .set({
+          idKategori: body.idKategori,
+          idPenerbit: body.idPenerbit,
+          idPembuat: body.idPembuat,
+          namaBuku: body.namaBuku,
+          isbn: body.isbn || "",
+          issn: body.issn || "",
+          tahunPembuatan: body.tahunPembuatan,
+          harga: body.harga,
+          keterangan: body.keterangan,
+          updatedAt: new Date(),
+        })
+        .where(eq(buku.idBuku, id))
+        .returning();
+
+      return c.json({
+        status: true,
+        message: "Berhasil mengupdate buku",
+        data: result[0],
+      });
+    } catch (error) {
+      return c.json({
+        status: false,
+        message: "Gagal mengupdate buku",
         error: error instanceof Error ? error.message : String(error),
       }, 500);
     }

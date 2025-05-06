@@ -1,35 +1,60 @@
-import { useState } from "react";
-import { Search as SearchIcon } from "lucide-react";
+import { useState } from 'react'
 
-const Search = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+interface Buku {
+  idBuku: number
+  namaBuku: string
+  tahunPembuatan: string
+}
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Searching:", searchTerm);
-  };
+interface SearchProps {
+  onSearch: (results: Buku[]) => void
+}
+
+const Search = ({ onSearch }: SearchProps) => {
+  const [query, setQuery] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!query.trim()) return
+
+    try {
+      setIsSearching(true)
+      const response = await fetch(`http://localhost:3000/buku/search?nama=${encodeURIComponent(query)}`)
+      const data = await response.json()
+
+      if (response.ok) {
+        onSearch(data)
+      } else {
+        console.error('Gagal mencari:', data.message)
+        onSearch([])
+      }
+    } catch (error) {
+      console.error('Error saat pencarian:', error)
+      onSearch([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
 
   return (
-    <form
-      onSubmit={handleSearch}
-      className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition-all focus-within:ring-2 focus-within:ring-blue-500"
-    >
-      <SearchIcon className="text-gray-500 w-4 h-4" />
+    <form onSubmit={handleSearch} className="flex items-center gap-2">
       <input
         type="text"
         placeholder="Cari buku..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="flex-1 bg-transparent focus:outline-none text-sm text-gray-700 placeholder-gray-400"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="border border-gray-300 rounded px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400"
       />
       <button
         type="submit"
-        className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-full hover:bg-blue-700 transition font-medium"
+        disabled={isSearching}
+        className="bg-green-600 text-white px-4 py-1.5 rounded hover:bg-green-700 transition disabled:opacity-50"
       >
-        Cari
+        {isSearching ? 'Mencari...' : 'Cari'}
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search

@@ -9,11 +9,7 @@ const pembuatRoute = new Hono();
 pembuatRoute.get('/get', async (c) => {
   try {
     const result = await db.select().from(pembuat).orderBy(pembuat.namaPembuat);
-    return c.json({
-      status: true,
-      message: "Berhasil mendapatkan data pembuat",
-      data: result
-    }, 200);
+    return c.json(result);
   } catch (e) {
     return c.json({
       status: false,

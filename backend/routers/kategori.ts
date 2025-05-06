@@ -26,11 +26,7 @@ kategoriRoute
   .get("/get", async (c) => {
     try {
       const result = await db.select().from(kategori).orderBy(kategori.namaKategori);
-      return c.json({
-        status: true,
-        message: "Berhasil mendapatkan data kategori",
-        data: result,
-      });
+      return c.json(result);
     } catch (error) {
       return c.json({
         status: false,

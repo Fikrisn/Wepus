@@ -19,11 +19,7 @@ penerbitRoute
     try {
       const result = await db.select().from(penerbit).orderBy(penerbit.namaPenerbit);
       
-      return c.json({
-        status: true,
-        message: "Berhasil mendapatkan data penerbit",
-        data: result
-      }, 200);
+      return c.json(result);
     } catch (error) {
       console.error("Error fetching publishers:", error);
       return c.json({
