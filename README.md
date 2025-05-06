@@ -34,7 +34,7 @@ bun add -D drizzle-kit tsx @types/pg
 ```
 
 # Setup Database (PostgreSQL via pgAdmin)
-buat database di pgAdmin : wepus
+buat database di pgAdmin : wepus <br>
 tambahkan ke .env:
 DATABASE_URL=postgres://postgres:root@localhost:5432/wepus
 
@@ -97,4 +97,4 @@ bunx drizzle-kit studio
 
 # Beberapa tips 
 Gunakan camelCase untuk nama route, contoh lariRoute
-Gunakan .env untuk menyimpan variable sensitif agar ti
+Gunakan .gitignore untuk menyimpan variable sensitif agar 
